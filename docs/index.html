@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>perspective-assistant</title>
-    <script type="module" crossorigin src="./assets/index-BHBOI4Vx.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-xwFS7DGC.css">
+    <script type="module" crossorigin src="./assets/index-rUokD5nx.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Db7F3Q_j.css">
   </head>
   <body>
     <h1>Perspective Assistant</h1>
@@ -109,7 +109,7 @@
       </select>
       smaller copies.
     </div>
-    <table class="result" id="split-result">
+    <table class="result" id="extended-result">
       <tr>
         <td>3</td>
         <td>2.4</td>
@@ -149,27 +149,23 @@
         >Progress from far to near: <input id="progress" value="0.5"
       /></label>
     </div>
-    <ul style="margin-top: 0;">
+    <ul style="margin-top: 0">
       <li>0 means the far line.</li>
       <li>1 means the near line.</li>
       <li>0.5 means half way between.</li>
-      <li>1.5 means go the whole way from far to near then 50% further.</li>
       <li>
-        -0.5 means to go the whole way from near to far, then 50% further.
+        1.5 means go the whole way from <u>far</u> to <u>near</u>, then 50%
+        further.
+      </li>
+      <li>
+        -0.5 means to go the whole way from <u>near</u> to <u>far</u>, then 50%
+        further.
       </li>
     </ul>
-    <table class="result" id="split-result">
+    <table class="result">
       <tr>
-        <td>2 3/32</td>
-      </tr>
-      <tr>
-        <td>2&numsp;3/32</td>
-      </tr>
-      <tr>
-        <td>
-          2&numsp;<span class="numerator">3</span>/<span class="denominator"
-            >32</span
-          >
+        <td id="specific-point-result">
+          2 <span class="numerator">3</span>/<span class="denominator">32</span>
         </td>
       </tr>
     </table>

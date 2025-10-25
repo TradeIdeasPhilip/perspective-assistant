@@ -8,7 +8,8 @@ body {
   font-size: 1.4em;
 }
 
- select,input {
+select,
+input {
   font-family: "Life Savers", serif;
   font-weight: bold;
   font-size: 90%;
@@ -101,11 +102,13 @@ table.result {
 .numerator {
   display: inline-flex;
   margin-top: 0.15em;
+  margin-right: -0.1em;
   transform: translateY(-0.15em);
 }
 
 .denominator {
   display: inline-flex;
   margin-bottom: 0.15em;
+  margin-left: -0.1em;
   transform: translateY(0.15em);
 }
