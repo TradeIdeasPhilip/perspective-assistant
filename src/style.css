@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ranchers&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Life+Savers:wght@400;700;800&display=swap");
+
+body {
+  font-family: "Life Savers", serif;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+ select,input {
+  font-family: "Life Savers", serif;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Ranchers", fantasy;
+  font-weight: 400;
+}
+
+/**
+ * This is a common style for code.
+ *
+ */
+code {
+  background-color: lightblue;
+  border-radius: 0.3em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  color: blue;
+  font-family: "Source Code Pro", monospace;
+  font-weight: 400;
+  font-size: 85%;
+}
+
+a:visited {
+  color: #c000c0;
+}
+
+.show-images {
+  border: thin solid black;
+  margin: 0.1em;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 0.3em;
+  justify-content: flex-start;
+}
+
+textarea#text {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+div.input {
+  margin: 0.5em 0;
+}
+
+div.range-holder {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+div.range-holder input[type="range"] {
+  flex-grow: 1;
+}
+
+#error {
+  color: white;
+  background-color: red;
+  font-size: 150%;
+}
+
+th {
+  font-weight: bolder;
+  text-align: right;
+}
+
+td {
+  text-align: right;
+}
+
+table.result {
+  border-collapse: separate; /* Required for border-spacing to work */
+  border-spacing: 1em 0; /* Horizontal spacing of 1em, no vertical spacing */
+  border: thick solid black;
+  margin: 0.5em;
+  padding: 0.5em 0;
+}
+
+.numerator {
+  display: inline-flex;
+  margin-top: 0.15em;
+  transform: translateY(-0.15em);
+}
+
+.denominator {
+  display: inline-flex;
+  margin-bottom: 0.15em;
+  transform: translateY(0.15em);
+}

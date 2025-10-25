@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>perspective-assistant</title>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <h1>Perspective Assistant</h1>
+    <div>
+      <label>Distance to far line: <input id="d-far" value="2" /></label>
+    </div>
+    <div>
+      <label>Distance to near line: <input id="d-near" value="1" /></label>
+    </div>
+    <div>
+      <label
+        >Precision:
+        <select id="precision">
+          <option value="0.1">0.1</option>
+          <option value="0.01">0.01</option>
+          <option value="0.001">0.001</option>
+          <option value="0.0001">0.0001</option>
+          <option value="1/2">1/2</option>
+          <option value="1/4">1/4</option>
+          <option value="1/8" selected>1/8</option>
+          <option value="1/16">1/16</option>
+          <option value="1/32">1/32</option>
+          <option value="1/64">1/64</option>
+        </select></label
+      >
+    </div>
+    <h2>Split</h2>
+    <div>
+      <label
+        >Split into
+        <select id="split-count">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+        </select>
+        equal pieces.</label
+      >
+    </div>
+    <table class="result" id="split-result">
+      <tr>
+        <td>Far</td>
+        <td>3.0</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>Near</td>
+        <td>2.0</td>
+      </tr>
+    </table>
+    <h2>Extend</h2>
+    <div>
+      Add
+      <select id="larger-count">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+      </select>
+      larger copies and
+      <select id="smaller-count">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+      </select>
+      smaller copies.
+    </div>
+    <table class="result" id="split-result">
+      <tr>
+        <td>3</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>Far</td>
+        <td>3.0</td>
+      </tr>
+      <tr>
+        <td>Near</td>
+        <td>2.0</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>2.4</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>2.4</td>
+      </tr>
+    </table>
+    <h2>Specific Point</h2>
+    <div>
+      <label
+        >Progress from far to near: <input id="progress" value="0.5"
+      /></label>
+    </div>
+    <ul style="margin-top: 0;">
+      <li>0 means the far line.</li>
+      <li>1 means the near line.</li>
+      <li>0.5 means half way between.</li>
+      <li>1.5 means go the whole way from far to near then 50% further.</li>
+      <li>
+        -0.5 means to go the whole way from near to far, then 50% further.
+      </li>
+    </ul>
+    <table class="result" id="split-result">
+      <tr>
+        <td>2 3/32</td>
+      </tr>
+      <tr>
+        <td>2&numsp;3/32</td>
+      </tr>
+      <tr>
+        <td>
+          2&numsp;<span class="numerator">3</span>/<span class="denominator"
+            >32</span
+          >
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
