@@ -42,10 +42,11 @@ function displayNumber(
     if (!isValid()) {
       displayError();
     } else {
-      const fraction = value! % 1;
-      const wholeNumber = value! - fraction;
       let denominator = maxDenominator;
-      let numerator = Math.abs(Math.round(fraction * denominator));
+      const improperNumerator = Math.round(value! * denominator);
+      let numerator = Math.abs(improperNumerator) % denominator;
+      const wholeNumber =
+        (Math.abs(improperNumerator) - numerator) / denominator;
       if (numerator == 0) {
         displayFixed(0);
       } else {
@@ -60,10 +61,11 @@ function displayNumber(
         denominatorSpan.classList.add("denominator");
         denominatorSpan.innerText = denominator.toString();
         element.innerHTML = "";
+        if (improperNumerator < 0) {
+          element.append("-");
+        }
         if (wholeNumber != 0) {
           element.append(wholeNumber.toString(), " ");
-        } else if (fraction < 0) {
-          element.append("-");
         }
         element.append(numeratorSpan, "/", denominatorSpan);
       }
