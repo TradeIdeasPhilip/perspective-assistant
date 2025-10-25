@@ -22,37 +22,44 @@ const specificPointResultCell = getById(
 );
 
 function displayNumber(value: number | undefined, element: HTMLElement) {
-  console.log(value, element);
+  function displayError() {
+    element.innerText = "invalid";
+  }
   function displayFixed(afterTheDecimal: number): void {
-    const asString = value!.toFixed(afterTheDecimal);
-    element.innerText = asString;
+    if (value === undefined || !isFinite(value) || value < 0) {
+      displayError();
+    } else {
+      const asString = value!.toFixed(afterTheDecimal);
+      element.innerText = asString;
+    }
   }
   function displayFraction(maxDenominator: number): void {
-    const fraction = value! % 1;
-    const wholeNumber = value! - fraction;
-    let denominator = maxDenominator;
-    let numerator = Math.abs(Math.round(fraction * denominator));
-    if (numerator == 0) {
-      displayFixed(0);
+    if (value === undefined || !isFinite(value) || value < 0) {
+      displayError();
     } else {
-      while (numerator % 2 == 0) {
-        numerator /= 2;
-        denominator /= 2;
+      const fraction = value! % 1;
+      const wholeNumber = value! - fraction;
+      let denominator = maxDenominator;
+      let numerator = Math.abs(Math.round(fraction * denominator));
+      if (numerator == 0) {
+        displayFixed(0);
+      } else {
+        while (numerator % 2 == 0) {
+          numerator /= 2;
+          denominator /= 2;
+        }
+        const numeratorSpan = document.createElement("span");
+        numeratorSpan.classList.add("numerator");
+        numeratorSpan.innerText = numerator.toString();
+        const denominatorSpan = document.createElement("span");
+        denominatorSpan.classList.add("denominator");
+        denominatorSpan.innerText = denominator.toString();
+        element.innerHTML = "";
+        if (wholeNumber != 0) {
+          element.append(wholeNumber.toString(), " ");
+        }
+        element.append(numeratorSpan, "/", denominatorSpan);
       }
-      const numeratorSpan = document.createElement("span");
-      numeratorSpan.classList.add("numerator");
-      numeratorSpan.innerText = numerator.toString();
-      const denominatorSpan = document.createElement("span");
-      denominatorSpan.classList.add("denominator");
-      denominatorSpan.innerText = denominator.toString();
-      element.innerHTML = "";
-      element.append(
-        wholeNumber.toString(),
-        " ",
-        numeratorSpan,
-        "/",
-        denominatorSpan
-      );
     }
   }
   if (value === undefined) {
@@ -165,6 +172,7 @@ function updateDisplay() {
   const progress = getNumberValue(progressInput);
   displayNumber(undefined, specificPointResultCell);
   splitResultTable.innerHTML = "";
+  extendedResultTable.innerHTML = "";
   if (dFar === undefined || dNear === undefined) {
     // No good data
   } else {
@@ -186,6 +194,39 @@ function updateDisplay() {
       row = splitResultTable.insertRow();
       row.insertCell().innerText = "Near";
       displayNumber(dNear, row.insertCell());
+    }
+    {
+      const largerCount = assertNonNullable(
+        parseIntX(largerCountSelect.selectedOptions[0].value)
+      );
+      for (let i = largerCount; i > 0; i--) {
+        const row = extendedResultTable.insertRow();
+        row.insertCell().innerText = i.toString();
+        displayNumber(findPerspectivePoint(dFar, dNear, -i), row.insertCell());
+      }
+    }
+    {
+      const row = extendedResultTable.insertRow();
+      row.insertCell().innerText = "Far";
+      displayNumber(dFar, row.insertCell());
+    }
+    {
+      const row = extendedResultTable.insertRow();
+      row.insertCell().innerText = "Near";
+      displayNumber(dNear, row.insertCell());
+    }
+    {
+      const smallerCount = assertNonNullable(
+        parseIntX(smallerCountSelect.selectedOptions[0].value)
+      );
+      for (let i = 0; i < smallerCount; i++) {
+        const row = extendedResultTable.insertRow();
+        row.insertCell().innerText = (i + 1).toString();
+        displayNumber(
+          findPerspectivePoint(dFar, dNear, i + 2),
+          row.insertCell()
+        );
+      }
     }
     if (progress !== undefined) {
       displayNumber(

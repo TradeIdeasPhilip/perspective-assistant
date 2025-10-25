@@ -5,16 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>perspective-assistant</title>
-    <script type="module" crossorigin src="./assets/index-CqBREdGS.js"></script>
+    <script type="module" crossorigin src="./assets/index-3rq64B9k.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Db7F3Q_j.css">
   </head>
   <body>
     <h1>Perspective Assistant</h1>
     <div>
-      <label>Distance to far line: <input id="d-far" value="2" /></label>
+      <label>Distance to far line: <input id="d-far" value="20" /></label>
     </div>
     <div>
-      <label>Distance to near line: <input id="d-near" value="1" /></label>
+      <label>Distance to near line: <input id="d-near" value="19" /></label>
     </div>
     <div>
       <label
@@ -26,8 +26,8 @@
           <option value="0.0001">0.0001</option>
           <option value="1/2">1/2</option>
           <option value="1/4">1/4</option>
-          <option value="1/8" selected>1/8</option>
-          <option value="1/16">1/16</option>
+          <option value="1/8">1/8</option>
+          <option value="1/16" selected>1/16</option>
           <option value="1/32">1/32</option>
           <option value="1/64">1/64</option>
         </select></label
@@ -39,7 +39,7 @@
         >Split into
         <select id="split-count">
           <option value="2">2</option>
-          <option value="3">3</option>
+          <option value="3" selected>3</option>
           <option value="4">4</option>
           <option value="5">5</option>
           <option value="6">6</option>
@@ -76,7 +76,7 @@
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
-        <option value="3">3</option>
+        <option value="3" selected>3</option>
         <option value="4">4</option>
         <option value="5">5</option>
         <option value="6">6</option>
@@ -94,7 +94,7 @@
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
-        <option value="3">3</option>
+        <option value="3" selected>3</option>
         <option value="4">4</option>
         <option value="5">5</option>
         <option value="6">6</option>
@@ -146,20 +146,20 @@
     <h2>Specific Point</h2>
     <div>
       <label
-        >Progress from far to near: <input id="progress" value="0.5"
+        >Progress from far to near: <input id="progress" value="1/2"
       /></label>
     </div>
     <ul style="margin-top: 0">
       <li>0 means the far line.</li>
       <li>1 means the near line.</li>
-      <li>0.5 means half way between.</li>
+      <li>1/2 (or 0.5) means half way between.</li>
       <li>
-        1.5 means go the whole way from <u>far</u> to <u>near</u>, then 50%
-        further.
+        1 1/2 (or 1.5) means go the whole way from <u>far</u> to <u>near</u>,
+        then 50% further.
       </li>
       <li>
-        -0.5 means to go the whole way from <u>near</u> to <u>far</u>, then 50%
-        further.
+        -1/2 (or -0.5) means to go the whole way from <u>near</u> to <u>far</u>,
+        then 50% further.
       </li>
     </ul>
     <table class="result">
