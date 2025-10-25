@@ -163,12 +163,31 @@ function updateDisplay() {
   const dFar = getNumberValue(dFarInput);
   const dNear = getNumberValue(dNearInput);
   const progress = getNumberValue(progressInput);
+  displayNumber(undefined, specificPointResultCell);
+  splitResultTable.innerHTML = "";
   if (dFar === undefined || dNear === undefined) {
-    displayNumber(undefined, specificPointResultCell);
+    // No good data
   } else {
-    if (progress === undefined) {
-      displayNumber(undefined, specificPointResultCell);
-    } else {
+    {
+      let row = splitResultTable.insertRow();
+      row.insertCell().innerText = "Far";
+      displayNumber(dFar, row.insertCell());
+      const numberOfPieces = assertNonNullable(
+        parseIntX(splitCountSelect.selectedOptions[0].value)
+      );
+      for (let i = 1; i < numberOfPieces; i++) {
+        row = splitResultTable.insertRow();
+        row.insertCell().innerText = i.toString();
+        displayNumber(
+          findPerspectivePoint(dFar, dNear, i / numberOfPieces),
+          row.insertCell()
+        );
+      }
+      row = splitResultTable.insertRow();
+      row.insertCell().innerText = "Near";
+      displayNumber(dNear, row.insertCell());
+    }
+    if (progress !== undefined) {
       displayNumber(
         findPerspectivePoint(dFar, dNear, progress),
         specificPointResultCell
