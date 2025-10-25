@@ -9,17 +9,31 @@ const precisionSelect = getById("precision", HTMLSelectElement);
 const splitCountSelect = getById("split-count", HTMLSelectElement);
 const splitResultTable = getById("split-result", HTMLTableElement);
 const largerCountSelect = getById("larger-count", HTMLSelectElement);
+const largerCopiesSpan = getById("larger-copies", HTMLSpanElement);
 const smallerCountSelect = getById("smaller-count", HTMLSelectElement);
+const smallerCopiesSpan = getById("smaller-copies", HTMLSpanElement);
 const extendedResultTable = getById("extended-result", HTMLTableElement);
 const specificPointResultCell = getById(
   "specific-point-result",
   HTMLTableCellElement
 );
 
+/**
+ * This does an attractive display of numbers.
+ *
+ * The format of the number comes from the precision input on the screen.
+ * If precision is set to a fraction, we will use fancy CSS to display the fraction nicely.
+ *
+ * If there is a problem with the value, this will display "invalid" in the element.
+ * A value is bad if it is `undefined`, not finite, or unexpectedly negative.
+ * @param value The number to display.
+ * @param element Where to display the result.
+ * @param allowNegatives Are negative numbers legal?  Defaults to false.
+ */
 function displayNumber(
   value: number | undefined,
   element: HTMLElement,
-  force = false
+  allowNegatives = false
 ) {
   function displayError() {
     element.innerText = "invalid";
@@ -28,8 +42,15 @@ function displayNumber(
     if (value === undefined || !isFinite(value)) {
       return false;
     }
-    return force || value >= 0;
+    return allowNegatives || value >= 0;
   }
+  /**
+   * Display the number with a fixed number of digits after the decimal.
+   *
+   * Use case: my ruler has a number for each centimeter, but had a tick mark for each millimeter.
+   * So I enter the numbers in centimeters, and display 1 digit after the decimal here.
+   * @param afterTheDecimal How many digits to display after the decimal point.
+   */
   function displayFixed(afterTheDecimal: number): void {
     if (!isValid()) {
       displayError();
@@ -38,6 +59,17 @@ function displayNumber(
       element.innerText = asString;
     }
   }
+  /**
+   * Display the result as a fraction.
+   * @param maxDenominator The most precision we want to display.
+   *
+   * This should be a power of 2.
+   * E.g. 32 if I want to show results in 32nds.
+   *
+   * The fraction will be simplified.
+   * If you ask for values in 32nds, 0.5 will still appear as "1/2".
+   * "0.500001" will also appear as "1/2".
+   */
   function displayFraction(maxDenominator: number): void {
     if (!isValid()) {
       displayError();
@@ -124,18 +156,36 @@ function displayNumber(
   }
 }
 
+/**
+ * This is the actual computation.
+ * This corresponds directly to the "Specific Point" section of web page.
+ * This is also used by the "Split" and "Extend" logic.
+ * @param dFar The distance from the vanishing point to the larger of the parallel lines.
+ * This value should be larger than `dClose`.
+ * @param dNear The distance from the vanishing point to the smaller of the parallel lines.
+ * This value should be smaller than `dFar`.
+ * @param progress
+ * * 0 means the far line.
+ * * 1 means the near line.
+ * * ½ (or 0.5) means half way between.
+ * * 1 ½ (or 1.5) means go the whole way from far to near, then 50% further.
+ * * -½ (or -0.5) means to go the whole way from near to far, then 50% further.
+ * @returns Where to draw a new line parallel to the two existing parallel lines.
+ */
 function findPerspectivePoint(
   dFar: number,
-  dClose: number,
+  dNear: number,
   progress: number
 ): number {
-  // dFar: distance from vanishing point to farther parallel side (wider)
-  // dClose: distance from vanishing point to closer parallel side (narrower)
-  // progress: 0 = farther side, 1 = closer side, 0.5 = halfway
-  // Returns: distance from vanishing point to the point at given progress
-  return (dFar * dClose) / ((1 - progress) * dClose + progress * dFar);
+  return (dFar * dNear) / ((1 - progress) * dNear + progress * dFar);
 }
 
+/**
+ * Reads numbers like "5", "5.5" (normal floating point parse), "1 2/3" (whole number and fraction),
+ * "72/3" (fraction without whole number), "-72/3" (a negative sign in front of any of those).
+ * @param input
+ * @returns A number, or undefined if the parse failed.
+ */
 function parseFraction(input: string): number | undefined {
   const fractionRE = /^ *(-)?(\d+ +)?(\d+) *\/ *(\d+) *$/;
   const fractionResult = fractionRE.exec(input);
@@ -164,6 +214,12 @@ function parseFraction(input: string): number | undefined {
   }
 }
 
+/**
+ * Read a number from an `<input>`.
+ * Make the background pink if the input is not a valid number.
+ * @param inputElement The source of the number
+ * @returns The number that was in there, or `undefined` if the contents could not be parsed.
+ */
 function getNumberValue(inputElement: HTMLInputElement) {
   const rawString = inputElement.value;
   const result = parseFraction(rawString);
@@ -175,6 +231,9 @@ function getNumberValue(inputElement: HTMLInputElement) {
   return result;
 }
 
+/**
+ * Call this any time any of the inputs changes.
+ */
 function updateDisplay() {
   const dFar = getNumberValue(dFarInput);
   const dNear = getNumberValue(dNearInput);
@@ -182,10 +241,24 @@ function updateDisplay() {
   displayNumber(undefined, specificPointResultCell);
   splitResultTable.innerHTML = "";
   extendedResultTable.innerHTML = "";
+  function fixCopies(count: number, span: HTMLSpanElement) {
+    const text = count == 1 ? "copy" : "copies";
+    span.innerText = text;
+  }
+  const largerCount = assertNonNullable(
+    parseIntX(largerCountSelect.selectedOptions[0].value)
+  );
+  fixCopies(largerCount, largerCopiesSpan);
+  const smallerCount = assertNonNullable(
+    parseIntX(smallerCountSelect.selectedOptions[0].value)
+  );
+  fixCopies(smallerCount, smallerCopiesSpan);
+
   if (dFar === undefined || dNear === undefined) {
     // No good data
   } else {
     {
+      // Show "split" table.
       let row = splitResultTable.insertRow();
       row.insertCell().innerText = "Far";
       displayNumber(dFar, row.insertCell());
@@ -205,9 +278,7 @@ function updateDisplay() {
       displayNumber(dNear, row.insertCell());
     }
     {
-      const largerCount = assertNonNullable(
-        parseIntX(largerCountSelect.selectedOptions[0].value)
-      );
+      // Show top of "extend" table.
       for (let i = largerCount; i > 0; i--) {
         const row = extendedResultTable.insertRow();
         row.insertCell().innerText = i.toString();
@@ -215,19 +286,19 @@ function updateDisplay() {
       }
     }
     {
+      // Show fixed part of "extend" table.
       const row = extendedResultTable.insertRow();
       row.insertCell().innerText = "Far";
       displayNumber(dFar, row.insertCell());
     }
     {
+      // Show fixed part of "extend" table.
       const row = extendedResultTable.insertRow();
       row.insertCell().innerText = "Near";
       displayNumber(dNear, row.insertCell());
     }
     {
-      const smallerCount = assertNonNullable(
-        parseIntX(smallerCountSelect.selectedOptions[0].value)
-      );
+      // Show bottom of "extend" table.
       for (let i = 0; i < smallerCount; i++) {
         const row = extendedResultTable.insertRow();
         row.insertCell().innerText = (i + 1).toString();
@@ -237,6 +308,7 @@ function updateDisplay() {
         );
       }
     }
+    // Show "specific point" result.
     if (progress !== undefined) {
       displayNumber(
         findPerspectivePoint(dFar, dNear, progress),
@@ -258,6 +330,7 @@ updateDisplay();
   element.addEventListener("input", updateDisplay);
 });
 
+// Update some constant fractions written directly into the HTML with our nicer formatting.
 querySelectorAll("[data-fraction]", HTMLSpanElement).forEach((span) => {
   const number = parseFraction(assertNonNullable(span.dataset.fraction));
   if (number === undefined) {
@@ -266,6 +339,7 @@ querySelectorAll("[data-fraction]", HTMLSpanElement).forEach((span) => {
   displayNumber(number, span, true);
 });
 
+// Make things available for debugging in the console.
 (window as any).PHIL = {
   dFarInput,
   dNearInput,

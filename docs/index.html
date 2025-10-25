@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>perspective-assistant</title>
-    <script type="module" crossorigin src="./assets/index-BNryOIrN.js"></script>
+    <script type="module" crossorigin src="./assets/index-DPItoq3b.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Db7F3Q_j.css">
   </head>
   <body>
@@ -18,7 +18,7 @@
     </div>
     <div>
       <label
-        >Precision:
+        >Output precision:
         <select id="precision">
           <option value="0.1">0.1</option>
           <option value="0.01">0.01</option>
@@ -89,7 +89,7 @@
         <option value="13">13</option>
         <option value="14">14</option>
       </select>
-      larger copies and
+      larger <span id="larger-copies">copies</span> and
       <select id="smaller-count">
         <option value="0">0</option>
         <option value="1">1</option>
@@ -107,7 +107,7 @@
         <option value="13">13</option>
         <option value="14">14</option>
       </select>
-      smaller copies.
+      smaller <span id="smaller-copies">copies</span>.
     </div>
     <table class="result" id="extended-result">
       <tr>
