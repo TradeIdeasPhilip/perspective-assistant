@@ -1,11 +1,6 @@
-import {
-  assertFinite,
-  assertNonNullable,
-  parseFloatX,
-  parseIntX,
-} from "phil-lib/misc";
+import { assertNonNullable, parseFloatX, parseIntX } from "phil-lib/misc";
 import "./style.css";
-import { getById } from "phil-lib/client-misc";
+import { getById, querySelectorAll } from "phil-lib/client-misc";
 
 const dFarInput = getById("d-far", HTMLInputElement);
 const dNearInput = getById("d-near", HTMLInputElement);
@@ -21,12 +16,22 @@ const specificPointResultCell = getById(
   HTMLTableCellElement
 );
 
-function displayNumber(value: number | undefined, element: HTMLElement) {
+function displayNumber(
+  value: number | undefined,
+  element: HTMLElement,
+  force = false
+) {
   function displayError() {
     element.innerText = "invalid";
   }
+  function isValid() {
+    if (value === undefined || !isFinite(value)) {
+      return false;
+    }
+    return force || value >= 0;
+  }
   function displayFixed(afterTheDecimal: number): void {
-    if (value === undefined || !isFinite(value) || value < 0) {
+    if (!isValid()) {
       displayError();
     } else {
       const asString = value!.toFixed(afterTheDecimal);
@@ -34,7 +39,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
     }
   }
   function displayFraction(maxDenominator: number): void {
-    if (value === undefined || !isFinite(value) || value < 0) {
+    if (!isValid()) {
       displayError();
     } else {
       const fraction = value! % 1;
@@ -57,6 +62,8 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
         element.innerHTML = "";
         if (wholeNumber != 0) {
           element.append(wholeNumber.toString(), " ");
+        } else if (fraction < 0) {
+          element.append("-");
         }
         element.append(numeratorSpan, "/", denominatorSpan);
       }
@@ -247,6 +254,14 @@ updateDisplay();
   smallerCountSelect,
 ].forEach((element) => {
   element.addEventListener("input", updateDisplay);
+});
+
+querySelectorAll("[data-fraction]", HTMLSpanElement).forEach((span) => {
+  const number = parseFraction(assertNonNullable(span.dataset.fraction));
+  if (number === undefined) {
+    console.error(span);
+  }
+  displayNumber(number, span, true);
 });
 
 (window as any).PHIL = {
