@@ -1,6 +1,7 @@
 import { assertNonNullable, parseFloatX, parseIntX } from "phil-lib/misc";
 import "./style.css";
 import { getById, querySelectorAll } from "phil-lib/client-misc";
+import "./input-demo";
 
 const dFarInput = getById("d-far", HTMLInputElement);
 const dNearInput = getById("d-near", HTMLInputElement);

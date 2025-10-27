@@ -112,3 +112,49 @@ table.result {
   margin-left: -0.1em;
   transform: translateY(0.15em);
 }
+
+#sample-polygon {
+  fill:none;
+  stroke-width: 0.1;
+  stroke: black;
+}
+
+.temporary {
+  fill:none;
+  stroke-width: 0.05;
+  stroke: #ccc;
+  stroke-linecap: round;
+}
+
+#far-text {
+  font-size: 0.4px;
+  text-anchor: middle;
+  --center-y: 1.5px;
+  transform: translateY(var(--center-y)) rotate(-90deg) translateY(0.9px);
+}
+#near-text {
+  font-size: 0.4px;
+  text-anchor: middle;
+  --center-y: 1.5px;
+  transform: translateY(var(--center-y)) rotate(-90deg) translateY(1.9px);
+}
+
+#to-far {
+    stroke-width: 0.1;
+  stroke: blue;
+  stroke-linecap: round;
+}
+
+#to-near {
+    stroke-width: 0.033333;
+  stroke: lime;
+  stroke-linecap: round;
+}
+
+.to-far-text {
+  color: blue;
+}
+
+.to-near-text {
+  color: limegreen
+}
