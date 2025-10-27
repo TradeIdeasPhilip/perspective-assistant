@@ -103,8 +103,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
     displayError();
   } else {
     const key = precisionSelect.selectedOptions[0];
-    const value = key.value;
-    switch (value) {
+    switch (key.value) {
       case "0.1": {
         displayFixed(1);
         break;
@@ -143,6 +142,10 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
       }
       case "1/64": {
         displayFraction(64);
+        break;
+      }
+      case "full": {
+        element.innerText = assertNonNullable(value).toString();
         break;
       }
       default: {
