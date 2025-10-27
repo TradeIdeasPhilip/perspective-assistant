@@ -51,7 +51,9 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
     if (!isValid()) {
       displayError();
     } else {
-      const asString = value!.toFixed(afterTheDecimal);
+      const asString = value!
+        .toFixed(afterTheDecimal)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       element.innerText = asString;
     }
   }
@@ -93,7 +95,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
           element.append("-");
         }
         if (wholeNumber != 0) {
-          element.append(wholeNumber.toString(), " ");
+          element.append(wholeNumber.toLocaleString(), " ");
         }
         element.append(numeratorSpan, "/", denominatorSpan);
       }
@@ -145,7 +147,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
         break;
       }
       case "full": {
-        element.innerText = assertNonNullable(value).toString();
+        element.innerText = assertNonNullable(value).toLocaleString();
         break;
       }
       default: {
