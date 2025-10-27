@@ -13,6 +13,10 @@ const largerCopiesSpan = getById("larger-copies", HTMLSpanElement);
 const smallerCountSelect = getById("smaller-count", HTMLSelectElement);
 const smallerCopiesSpan = getById("smaller-copies", HTMLSpanElement);
 const extendedResultTable = getById("extended-result", HTMLTableElement);
+const smallestLegalProgressSpan = getById(
+  "smallest-legal-progress",
+  HTMLSpanElement
+);
 const specificPointResultCell = getById(
   "specific-point-result",
   HTMLTableCellElement
@@ -28,21 +32,13 @@ const specificPointResultCell = getById(
  * A value is bad if it is `undefined`, not finite, or unexpectedly negative.
  * @param value The number to display.
  * @param element Where to display the result.
- * @param allowNegatives Are negative numbers legal?  Defaults to false.
  */
-function displayNumber(
-  value: number | undefined,
-  element: HTMLElement,
-  allowNegatives = false
-) {
+function displayNumber(value: number | undefined, element: HTMLElement) {
   function displayError() {
     element.innerText = "invalid";
   }
   function isValid() {
-    if (value === undefined || !isFinite(value)) {
-      return false;
-    }
-    return allowNegatives || value >= 0;
+    return !(value === undefined || !isFinite(value));
   }
   /**
    * Display the number with a fixed number of digits after the decimal.
@@ -103,8 +99,8 @@ function displayNumber(
       }
     }
   }
-  if (value === undefined) {
-    element.innerHTML = "";
+  if (!isValid()) {
+    displayError();
   } else {
     const key = precisionSelect.selectedOptions[0];
     const value = key.value;
@@ -161,7 +157,7 @@ function displayNumber(
  * This corresponds directly to the "Specific Point" section of web page.
  * This is also used by the "Split" and "Extend" logic.
  * @param dFar The distance from the vanishing point to the larger of the parallel lines.
- * This value should be larger than `dClose`.
+ * This value should be larger than `dNear`.
  * @param dNear The distance from the vanishing point to the smaller of the parallel lines.
  * This value should be smaller than `dFar`.
  * @param progress
@@ -171,13 +167,44 @@ function displayNumber(
  * * 1 ½ (or 1.5) means go the whole way from far to near, then 50% further.
  * * -½ (or -0.5) means to go the whole way from near to far, then 50% further.
  * @returns Where to draw a new line parallel to the two existing parallel lines.
+ * `undefined` in case of error.
  */
 function findPerspectivePoint(
   dFar: number,
   dNear: number,
   progress: number
-): number {
-  return (dFar * dNear) / ((1 - progress) * dNear + progress * dFar);
+): number | undefined {
+  if (dFar <= dNear || dNear <= 0) {
+    return undefined;
+  }
+  const denominator = (1 - progress) * dNear + progress * dFar;
+  if (denominator <= 0) {
+    return undefined;
+  }
+  return (dFar * dNear) / denominator;
+}
+
+/**
+ * Find the z coordinate of the viewer!
+ * @param dFar The distance from the vanishing point to the larger of the parallel lines.
+ * This value should be larger than `dNear`.
+ * @param dNear The distance from the vanishing point to the smaller of the parallel lines.
+ * This value should be smaller than `dFar`.
+ * @returns The value of `progress` where {@link findPerspectivePoint} would return `undefined`.
+ * `progress` should between greater than this value.
+ * This should be a negative number.
+ */
+function findProgressLimit(
+  dFar: number | undefined,
+  dNear: number | undefined
+) {
+  if (dFar === undefined || dNear === undefined) {
+    return undefined;
+  }
+  if (dFar <= dNear || dNear <= 0) {
+    return undefined;
+  }
+  return dNear / (dNear - dFar);
 }
 
 /**
@@ -239,6 +266,7 @@ function updateDisplay() {
   const dNear = getNumberValue(dNearInput);
   const progress = getNumberValue(progressInput);
   displayNumber(undefined, specificPointResultCell);
+  displayNumber(findProgressLimit(dFar, dNear), smallestLegalProgressSpan);
   splitResultTable.innerHTML = "";
   extendedResultTable.innerHTML = "";
   function fixCopies(count: number, span: HTMLSpanElement) {
@@ -309,12 +337,12 @@ function updateDisplay() {
       }
     }
     // Show "specific point" result.
-    if (progress !== undefined) {
-      displayNumber(
-        findPerspectivePoint(dFar, dNear, progress),
-        specificPointResultCell
-      );
-    }
+    displayNumber(
+      progress === undefined
+        ? undefined
+        : findPerspectivePoint(dFar, dNear, progress),
+      specificPointResultCell
+    );
   }
 }
 updateDisplay();
@@ -336,7 +364,7 @@ querySelectorAll("[data-fraction]", HTMLSpanElement).forEach((span) => {
   if (number === undefined) {
     console.error(span);
   }
-  displayNumber(number, span, true);
+  displayNumber(number, span);
 });
 
 // Make things available for debugging in the console.
