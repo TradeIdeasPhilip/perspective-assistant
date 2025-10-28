@@ -1,3 +1,64 @@
+
+// TODO move this back into phil-lib (after some testing).
+// I modified this so that "" and " " will now report an error.
+// That was always my intent.
+// Previously they parsed to 0.
+/**
+ * There are a lot of ways to convert a string to a number in JavaScript.
+ * And they are all slightly different!
+ *
+ * This is my preferred way to parse a number.  Any errors are reported
+ * as undefined, so you can choose to get rid of them with ??.
+ *
+ * I get rid of NaNs and infinities.  I don't think I every really send
+ * an infinity over the network or save it in a file.  These become
+ * undefined, just like errors.
+ * @param source The input to parse.
+ * @returns A finite number or undefined if the parse failed.
+ */
+export function parseFloatX(
+  source: string | undefined | null
+): number | undefined {
+  if (source === undefined || source === null || source.trim()==="") {
+    return undefined;
+  }
+  const result = +source;
+  if (isFinite(result)) {
+    return result;
+  } else {
+    return undefined;
+  }
+}
+
+// I copied this function from phil-lib just so it would use my new version of parseFloatX().
+// Once I copy my version of parseFloatX() back to phil-lib, parseIntX() will automatically work right.
+/**
+ * There are a lot of ways to convert a string to a number in JavaScript.
+ * And they are all slightly different!
+ *
+ * I get rid of NaNs, infinities, numbers with a fraction, or integers
+ * that are too big to fit into JavaScript numbers.  These are all
+ * converted into undefined.
+ * @param source The input to parse
+ * @returns A finite integer or undefined if the parse failed.
+ */
+export function parseIntX(
+  source: string | undefined | null
+): number | undefined {
+  const result = parseFloatX(source);
+  if (result === undefined) {
+    return undefined;
+  } else if (
+    result > Number.MAX_SAFE_INTEGER ||
+    result < Number.MIN_SAFE_INTEGER ||
+    result != Math.floor(result)
+  ) {
+    return undefined;
+  } else {
+    return result;
+  }
+}
+
 /**
  * Collect multiple events into a single call to the event handler.
  *
