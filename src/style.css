@@ -114,13 +114,13 @@ table.result {
 }
 
 #sample-polygon {
-  fill:none;
+  fill: none;
   stroke-width: 0.1;
   stroke: black;
 }
 
 .temporary {
-  fill:none;
+  fill: none;
   stroke-width: 0.05;
   stroke: #ccc;
   stroke-linecap: round;
@@ -130,24 +130,24 @@ table.result {
   font-size: 0.4px;
   text-anchor: middle;
   --center-y: 1.5px;
-  transform: translateY(var(--center-y)) rotate(-90deg) translateY(0.9px);
+  transform: translateY(var(--center-y)) rotate(-90deg) translateY(0.87px);
 }
 #near-text {
   font-size: 0.4px;
   text-anchor: middle;
   --center-y: 1.5px;
-  transform: translateY(var(--center-y)) rotate(-90deg) translateY(1.9px);
+  transform: translateY(var(--center-y)) rotate(-90deg) translateY(1.87px);
 }
 
 #to-far {
-    stroke-width: 0.1;
+  stroke-width: 0.2;
   stroke: blue;
   stroke-linecap: round;
 }
 
 #to-near {
-    stroke-width: 0.033333;
-  stroke: lime;
+  stroke-width: 0.1;
+  stroke: limegreen;
   stroke-linecap: round;
 }
 
@@ -156,5 +156,5 @@ table.result {
 }
 
 .to-near-text {
-  color: limegreen
+  color: limegreen;
 }
