@@ -42,6 +42,31 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
     return !(value === undefined || !isFinite(value));
   }
   /**
+   * Like Number.toFixed() but add grouping symbols.
+   * @param toFormat Something like 3001/3
+   * @param digitsAfterTheDecimal Something like 2
+   * @returns Something like '1,000.33'
+   */
+  function fixedWithGrouping(toFormat: number, digitsAfterTheDecimal: number) {
+    return toFormat.toLocaleString("en-US", {
+      minimumFractionDigits: digitsAfterTheDecimal,
+      maximumFractionDigits: digitsAfterTheDecimal,
+      useGrouping: true,
+    });
+  }
+  /**
+   * Similar to number.toString() but add grouping symbols.
+   * @param toFormat Something like 3001/3
+   * @returns Something like '1,000.3333333333334'
+   */
+  function fullPrecision(toFormat: number) {
+    return toFormat.toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 20,
+      useGrouping: true,
+    });
+  }
+  /**
    * Display the number with a fixed number of digits after the decimal.
    *
    * Use case: my ruler has a number for each centimeter, but had a tick mark for each millimeter.
@@ -52,9 +77,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
     if (!isValid()) {
       displayError();
     } else {
-      const asString = value!
-        .toFixed(afterTheDecimal)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      const asString = fixedWithGrouping(value!, afterTheDecimal);
       element.innerText = asString;
     }
   }
@@ -96,7 +119,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
           element.append("-");
         }
         if (wholeNumber != 0) {
-          element.append(wholeNumber.toLocaleString(), " ");
+          element.append(fixedWithGrouping(wholeNumber, 0), " ");
         }
         element.append(numeratorSpan, "/", denominatorSpan);
       }
@@ -148,7 +171,7 @@ function displayNumber(value: number | undefined, element: HTMLElement) {
         break;
       }
       case "full": {
-        element.innerText = assertNonNullable(value).toLocaleString();
+        element.innerText = fullPrecision(assertNonNullable(value));
         break;
       }
       default: {
