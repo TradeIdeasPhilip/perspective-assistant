@@ -5,7 +5,9 @@ import "./input-demo";
 import { parseFloatX, parseIntX } from "./util";
 
 const dFarInput = getById("d-far", HTMLInputElement);
+const dFarError = getById("d-far-error", HTMLSpanElement);
 const dNearInput = getById("d-near", HTMLInputElement);
+const dNearError = getById("d-near-error", HTMLSpanElement);
 const progressInput = getById("progress", HTMLInputElement);
 const precisionSelect = getById("precision", HTMLSelectElement);
 const splitCountSelect = getById("split-count", HTMLSelectElement);
@@ -271,6 +273,14 @@ function parseFraction(input: string): number | undefined {
   }
 }
 
+function markInvalid(inputElement: HTMLInputElement) {
+  inputElement.style.backgroundColor = "pink";
+}
+
+function markValid(inputElement: HTMLInputElement) {
+  inputElement.style.backgroundColor = "";
+}
+
 /**
  * Read a number from an `<input>`.
  * Make the background pink if the input is not a valid number.
@@ -281,9 +291,9 @@ function getNumberValue(inputElement: HTMLInputElement) {
   const rawString = inputElement.value;
   const result = parseFraction(rawString);
   if (result === undefined) {
-    inputElement.style.backgroundColor = "pink";
+    markInvalid(inputElement);
   } else {
-    inputElement.style.backgroundColor = "";
+    markValid(inputElement);
   }
   return result;
 }
@@ -292,8 +302,34 @@ function getNumberValue(inputElement: HTMLInputElement) {
  * Call this any time any of the inputs changes.
  */
 function updateDisplay() {
-  const dFar = getNumberValue(dFarInput);
-  const dNear = getNumberValue(dNearInput);
+  let dFar = getNumberValue(dFarInput);
+  let dNear = getNumberValue(dNearInput);
+  dFarError.innerText = "";
+  dNearError.innerText = "";
+  if (dNear !== undefined) {
+    if (dNear <= 0) {
+      dNear = undefined;
+      markInvalid(dNearInput);
+      dNearError.innerHTML = "This value must be <u>greater than</u> 0.";
+    }
+  }
+  if (dFar !== undefined) {
+    if (dNear !== undefined) {
+      if (dFar <= dNear) {
+        dFar = undefined;
+        markInvalid(dFarInput);
+        dFarError.innerHTML =
+          "The far value must be <u>greater than</u> the near value.";
+      }
+    } else {
+      if (dFar <= 0) {
+        dFar = undefined;
+        markInvalid(dFarInput);
+        dFarError.innerHTML = "This value must be <u>greater than</u> 0.";
+      }
+    }
+  }
+
   const progress = getNumberValue(progressInput);
   displayNumber(undefined, specificPointResultCell);
   displayNumber(findProgressLimit(dFar, dNear), smallestLegalProgressSpan);
@@ -407,5 +443,5 @@ querySelectorAll("[data-fraction]", HTMLSpanElement).forEach((span) => {
   findPerspectivePoint,
   updateDisplay,
   parseFloatX,
-  parseIntX
+  parseIntX,
 };

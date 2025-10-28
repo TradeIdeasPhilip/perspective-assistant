@@ -158,3 +158,8 @@ table.result {
 .to-near-text {
   color: limegreen;
 }
+
+.error-message {
+  font-style: italic;
+  color: red;
+}
